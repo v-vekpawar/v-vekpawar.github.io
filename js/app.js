@@ -232,45 +232,67 @@ document.addEventListener('DOMContentLoaded', () => {
             const promptLine = termBody.querySelector('.prompt-line');
             promptLine.innerHTML = buildPromptLine('cd skills && ls -l', false);
 
-            let html = `<div class="term-output">`;
-            html += `<div class="term-comment anim-fade-up">// tech_stack — ${allSkills.length} skills loaded</div>`;
+            const outputDiv = document.createElement('div');
+            outputDiv.className = 'term-output';
+            termBody.appendChild(outputDiv);
 
-            // Compact grid showing ALL skills at once
-            html += `<div class="skills-grid anim-fade-up" style="animation-delay: 0.15s;">`;
-            allSkills.forEach(skill => {
-                html += `
-                    <div class="skill-entry">
+            const comment = document.createElement('div');
+            comment.className = 'term-comment';
+            comment.textContent = `// tech_stack — ${allSkills.length} skills loaded`;
+            outputDiv.appendChild(comment);
+
+            const grid = document.createElement('div');
+            grid.className = 'skills-grid';
+            outputDiv.appendChild(grid);
+
+            // Sequentially reveal each skill entry
+            let skillIdx = 0;
+            function revealNextSkill() {
+                if (skillIdx < allSkills.length) {
+                    const skill = allSkills[skillIdx];
+                    const entry = document.createElement('div');
+                    entry.className = 'skill-entry';
+                    entry.innerHTML = `
                         <span class="arrow">→</span>
                         <span class="name">${skill.name}</span>
                         <span class="desc">// ${skill.desc}</span>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-
-            // Filter buttons
-            html += `<div class="skills-filters anim-fade-up" style="animation-delay: 0.3s;">`;
-            html += `<span class="term-comment" style="font-size: 11px; margin-right: 4px;">grep:</span>`;
-            for (const category of Object.keys(skillsData)) {
-                html += `<button class="filter-btn" data-filter="${category}">${category}()</button>`;
+                    `;
+                    grid.appendChild(entry);
+                    skillIdx++;
+                    setTimeout(revealNextSkill, 40); // Fast typographic sequence
+                } else {
+                    renderSkillFilters(outputDiv);
+                }
             }
-            html += `</div>`;
-
-            // Area for appended filter output
-            html += `<div id="filter-output-area"></div>`;
-
-            html += `</div>`;
-            termBody.innerHTML += html;
-
-            // Attach filter listeners
-            setupFilterListeners();
+            revealNextSkill();
 
             isTyping = false;
         });
     }
 
-    function setupFilterListeners() {
-        const filterBtns = termBody.querySelectorAll('.filter-btn');
+    function renderSkillFilters(container) {
+        const filters = document.createElement('div');
+        filters.className = 'skills-filters anim-fade-up';
+        filters.innerHTML = `<span class="term-comment" style="font-size: 11px; margin-right: 4px;">grep:</span>`;
+        
+        for (const category of Object.keys(skillsData)) {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn';
+            btn.dataset.filter = category;
+            btn.textContent = `${category}()`;
+            filters.appendChild(btn);
+        }
+        
+        container.appendChild(filters);
+        const outputArea = document.createElement('div');
+        outputArea.id = 'filter-output-area';
+        container.appendChild(outputArea);
+        
+        setupFilterListeners(filters);
+    }
+
+    function setupFilterListeners(container) {
+        const filterBtns = container.querySelectorAll('.filter-btn');
         const outputArea = document.getElementById('filter-output-area');
 
         filterBtns.forEach(btn => {
@@ -279,28 +301,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 const skills = skillsData[key];
                 if (!skills) return;
 
-                // Toggle active
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
-                // Build appended output
-                let html = `<div class="filter-output">`;
-                html += `<div class="prompt-line" style="margin-bottom: 8px;">${buildPromptLine(`ls -l | grep ${key}`, false)}</div>`;
-                skills.forEach(skill => {
-                    html += `
-                        <div class="skill-entry" style="padding-left: 16px;">
+                outputArea.innerHTML = `<div class="prompt-line" style="margin-bottom: 8px;">${buildPromptLine(`ls -l | grep ${key}`, false)}</div>`;
+                
+                let sIdx = 0;
+                function revealFilterSkill() {
+                    if (sIdx < skills.length) {
+                        const skill = skills[sIdx];
+                        const entry = document.createElement('div');
+                        entry.className = 'skill-entry';
+                        entry.style.paddingLeft = '16px';
+                        entry.innerHTML = `
                             <span class="arrow">→</span>
                             <span class="name">${skill.name}</span>
                             <span class="desc">// ${skill.desc}</span>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-
-                outputArea.innerHTML = html;
-
-                // Scroll to bottom of terminal
-                termBody.scrollTop = termBody.scrollHeight;
+                        `;
+                        outputArea.appendChild(entry);
+                        sIdx++;
+                        termBody.scrollTop = termBody.scrollHeight;
+                        setTimeout(revealFilterSkill, 50);
+                    }
+                }
+                revealFilterSkill();
             });
         });
     }
@@ -397,21 +421,49 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!output) return;
 
         const tagsHtml = p.tags.map(t => `<span class="detail-tag">${t}</span>`).join('');
-        const bulletsHtml = p.bullets.map(b => `<li>${b}</li>`).join('');
-
-        let linksHtml = '';
-        if (p.link) linksHtml += `<a href="${p.link}" target="_blank" class="detail-link">Execute_App()</a>`;
-        if (p.gh) linksHtml += `<a href="${p.gh}" target="_blank" class="detail-link">View_Source()</a>`;
+        const bulletsHtml = p.bullets.map((b, i) => `<li style="opacity: 0;" class="p-bullet-${i}">${b}</li>`).join('');
 
         output.innerHTML = `
             <div class="detail-tags">${tagsHtml}</div>
             <div class="detail-title">${p.title}</div>
-            <div class="detail-desc">${p.desc}</div>
+            <div class="detail-desc" id="p-desc"></div>
             <ul class="detail-bullets">${bulletsHtml}</ul>
-            <div class="detail-links">${linksHtml}</div>
+            <div class="detail-links" id="p-links" style="opacity: 0;"></div>
         `;
 
+        const descArea = document.getElementById('p-desc');
+        const linksArea = document.getElementById('p-links');
+        
         output.classList.add('visible');
+
+        // Typewriter reveal for description
+        typewriterText(descArea, p.desc, 10);
+
+        // Sequential reveal for bullets
+        setTimeout(() => {
+            let bIdx = 0;
+            function revealNextBullet() {
+                if (bIdx < p.bullets.length) {
+                    const li = output.querySelector(`.p-bullet-${bIdx}`);
+                    if (li) {
+                        li.style.transition = 'opacity 0.4s ease';
+                        li.style.opacity = '1';
+                    }
+                    bIdx++;
+                    setTimeout(revealNextBullet, 200);
+                } else {
+                    // Show links at the end
+                    linksArea.style.transition = 'opacity 0.5s ease';
+                    linksArea.style.opacity = '1';
+                    
+                    let linksHtml = '';
+                    if (p.link) linksHtml += `<a href="${p.link}" target="_blank" class="detail-link">Execute_App()</a>`;
+                    if (p.gh) linksHtml += `<a href="${p.gh}" target="_blank" class="detail-link">View_Source()</a>`;
+                    linksArea.innerHTML = linksHtml;
+                }
+            }
+            revealNextBullet();
+        }, (p.desc.length * 10) + 150);
     }
 
     function renderEducation() {
@@ -506,6 +558,24 @@ document.addEventListener('DOMContentLoaded', () => {
     themeToggle.addEventListener('click', () => {
         const current = htmlEl.getAttribute('data-theme');
         htmlEl.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    });
+
+    // ================================================
+    // SECURITY — Anti-Copy Measures
+    // ================================================
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        // Disable F12, Ctrl+Shift+I (DevTools), Ctrl+U (Source), Ctrl+S (Save), Ctrl+C (Copy)
+        if (
+            e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+            (e.ctrlKey && e.key === 'u') ||
+            (e.ctrlKey && e.key === 's') ||
+            (e.ctrlKey && e.key === 'c')
+        ) {
+            e.preventDefault();
+            return false;
+        }
     });
 
     // ================================================
