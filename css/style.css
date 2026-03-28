@@ -33,15 +33,15 @@
     --bg-card: #ffffff;
     --accent: #059669;
     --accent-secondary: #0284c7;
-    --accent-dim: rgba(5, 150, 105, 0.08);
-    --accent-glow: rgba(5, 150, 105, 0.12);
+    --accent-dim: rgba(5, 150, 105, 0.12);      /* ↑ from 0.08 */
+    --accent-glow: rgba(5, 150, 105, 0.28);     /* ↑ from 0.12 */
     --text-primary: #1a2332;
     --text-muted: #64748b;
     --text-comment: #94a3b8;
     --border: #cdd7e1;
-    --border-glow: rgba(5, 150, 105, 0.06);
-    --shadow: rgba(30, 40, 60, 0.08);
-    --shadow-soft: rgba(30, 40, 60, 0.05);
+    --border-glow: rgba(5, 150, 105, 0.18);     /* ↑ from 0.06 */
+    --shadow: rgba(30, 40, 60, 0.13);           /* ↑ from 0.08 */
+    --shadow-soft: rgba(30, 40, 60, 0.08);      /* ↑ from 0.05 */
 }
 
 /* --- Reset & Base --- */
@@ -65,7 +65,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    user-select: none; /* Prevent text selection */
+
 }
 
 a {
@@ -108,9 +108,26 @@ a {
 
 [data-theme="light"] .terminal-window {
     box-shadow:
-        0 1px 3px var(--shadow),
-        0 8px 32px var(--shadow-soft),
-        0 0 0 1px var(--border-glow);
+        0 0 0 1.5px rgba(5, 150, 105, 0.22),
+        0 4px 16px rgba(30, 40, 60, 0.12),
+        0 12px 40px rgba(30, 40, 60, 0.08);
+    animation: terminal-breathe-light 4s ease-in-out infinite;
+}
+
+@keyframes terminal-breathe-light {
+    0%, 100% {
+        box-shadow:
+            0 0 0 1.5px rgba(5, 150, 105, 0.15),
+            0 4px 16px rgba(30, 40, 60, 0.12),
+            0 12px 40px rgba(30, 40, 60, 0.07);
+    }
+    50% {
+        box-shadow:
+            0 0 0 1.5px rgba(5, 150, 105, 0.38),
+            0 4px 20px rgba(30, 40, 60, 0.14),
+            0 12px 44px rgba(5, 150, 105, 0.10),
+            0 0 40px rgba(5, 150, 105, 0.08);
+    }
 }
 
 /* Title Bar */
@@ -154,15 +171,16 @@ a {
 
 /* Terminal Body */
 .terminal-body {
-    padding: 32px;
-    min-height: 420px;
-    max-height: 70vh;
+    padding: 24px;
+    height: 460px;
     overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    scroll-behavior: smooth;
     font-family: var(--font-mono);
     font-size: 14px;
     line-height: 1.7;
     color: var(--text-primary);
-    position: relative;
 }
 
 /* Scrollbar */
@@ -236,30 +254,36 @@ a {
 }
 
 .term-hero-name {
-    font-family: var(--font-heading);
-    font-size: 48px;
-    font-weight: 700;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 10px; /* JS will shrink this to fit on small screens */
     line-height: 1.1;
-    margin-bottom: 8px;
+    margin-bottom: 24px;
     color: var(--text-primary);
     display: block;
+    white-space: pre;
+    overflow: visible;
+    letter-spacing: 0;
+    font-weight: normal;
+    transform-origin: top left;
 }
 
 .term-hero-subtitle {
-    font-family: var(--font-mono);
-    color: var(--accent);
-    font-size: 16px;
-    margin-bottom: 20px;
     display: block;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
 }
 
 .term-hero-bio {
-    color: var(--text-muted);
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.7;
-    max-width: 500px;
     display: block;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin-bottom: 32px;
 }
 
 .term-hero-separator {
@@ -520,32 +544,34 @@ a {
 }
 
 .detail-title {
-    font-family: var(--font-heading);
-    font-size: 20px;
+    font-family: var(--font-mono);
+    font-size: 24px;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 }
 
 .detail-desc {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
     color: var(--text-muted);
-    font-family: var(--font-body);
-    font-size: 13px;
-    line-height: 1.7;
-    margin-bottom: 12px;
+    margin-bottom: 24px;
 }
 
 .detail-bullets {
     list-style: none;
     padding: 0;
-    margin-bottom: 16px;
+    margin-bottom: 32px;
 }
 
 .detail-bullets li {
-    color: var(--text-muted);
     font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 3px 0;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    padding-left: 24px;
+    position: relative;
 }
 
 .detail-bullets li::before {
@@ -658,10 +684,44 @@ a {
     display: flex;
     align-items: center;
     gap: 8px;
+    animation: cmd-breathe 3s ease-in-out infinite;
+}
+
+/* Staggered wave delays across the 5 buttons */
+.cmd-btn:nth-child(1) { animation-delay: 0s; }
+.cmd-btn:nth-child(2) { animation-delay: 0.3s; }
+.cmd-btn:nth-child(3) { animation-delay: 0.6s; }
+.cmd-btn:nth-child(4) { animation-delay: 0.9s; }
+.cmd-btn:nth-child(5) { animation-delay: 1.2s; }
+
+@keyframes cmd-breathe {
+    0%, 100% {
+        border-color: var(--border);
+        box-shadow: 0 4px 16px var(--shadow), 0 0 0px rgba(0, 255, 157, 0);
+    }
+    50% {
+        border-color: rgba(0, 255, 157, 0.45);
+        box-shadow: 0 4px 16px var(--shadow),
+                    0 0 14px rgba(0, 255, 157, 0.18),
+                    0 0 28px rgba(0, 255, 157, 0.07);
+    }
+}
+
+@keyframes cmd-breathe-light {
+    0%, 100% {
+        border-color: var(--border);
+        box-shadow: 0 2px 8px rgba(30, 40, 60, 0.10), 0 0 0px rgba(5, 150, 105, 0);
+    }
+    50% {
+        border-color: rgba(5, 150, 105, 0.70);
+        box-shadow: 0 2px 8px rgba(30, 40, 60, 0.10),
+                    0 0 16px rgba(5, 150, 105, 0.35),
+                    0 0 32px rgba(5, 150, 105, 0.14);
+    }
 }
 
 [data-theme="light"] .cmd-btn {
-    box-shadow: 0 1px 3px var(--shadow-soft);
+    animation-name: cmd-breathe-light;
 }
 
 .cmd-btn:hover {
@@ -670,6 +730,12 @@ a {
     background: var(--accent-dim);
     box-shadow: 0 0 20px var(--accent-dim);
     transform: translateY(-2px);
+    animation-play-state: paused;
+}
+
+[data-theme="light"] .cmd-btn:hover {
+    box-shadow: 0 0 22px rgba(5, 150, 105, 0.38),
+                0 4px 16px rgba(30, 40, 60, 0.12);
 }
 
 .cmd-btn.active {
@@ -677,12 +743,19 @@ a {
     border-color: var(--accent);
     background: var(--accent-dim);
     box-shadow: 0 0 15px var(--accent-dim);
+    animation-play-state: paused;
+}
+
+[data-theme="light"] .cmd-btn.active {
+    box-shadow: 0 0 20px rgba(5, 150, 105, 0.32),
+                0 4px 14px rgba(30, 40, 60, 0.10);
 }
 
 .cmd-icon {
     font-size: 12px;
     opacity: 0.7;
 }
+
 
 /* ============================================
    SOCIAL SIDEBAR — Style D: Expand on Hover
@@ -736,13 +809,48 @@ a {
     align-items: center;
     justify-content: center;
     color: var(--text-muted);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px var(--shadow);
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
+    animation: sb-breathe 3s ease-in-out infinite;
+}
+
+/* Staggered delays for wave effect */
+.sb-item:nth-child(1) .sb-dot { animation-delay: 0s; }
+.sb-item:nth-child(2) .sb-dot { animation-delay: 0.4s; }
+.sb-item:nth-child(3) .sb-dot { animation-delay: 0.8s; }
+.sb-item:nth-child(4) .sb-dot { animation-delay: 1.2s; }
+.sb-item:nth-child(5) .sb-dot { animation-delay: 1.6s; }
+
+@keyframes sb-breathe {
+    0%, 100% {
+        border-color: var(--border);
+        box-shadow: 0 4px 20px var(--shadow), 0 0 0px rgba(0, 255, 157, 0);
+    }
+    50% {
+        border-color: rgba(0, 255, 157, 0.6);
+        box-shadow: 0 4px 20px var(--shadow),
+                    0 0 16px rgba(0, 255, 157, 0.22),
+                    0 0 36px rgba(0, 255, 157, 0.08);
+    }
+}
+
+@keyframes sb-breathe-light {
+    0%, 100% {
+        border-color: var(--border);
+        box-shadow: 0 2px 10px rgba(30, 40, 60, 0.10), 0 0 0px rgba(5, 150, 105, 0);
+    }
+    50% {
+        border-color: rgba(5, 150, 105, 0.75);
+        box-shadow: 0 2px 10px rgba(30, 40, 60, 0.10),
+                    0 0 18px rgba(5, 150, 105, 0.38),
+                    0 0 34px rgba(5, 150, 105, 0.16);
+    }
 }
 
 [data-theme="light"] .sb-dot {
-    box-shadow: 0 2px 10px var(--shadow-soft);
+    animation-name: sb-breathe-light;
 }
 
 .sb-dot:hover {

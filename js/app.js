@@ -12,10 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // ================================================
     const heroData = {
         label: "HI, I'M",
-        name: "Vivek Pawar",
+        name: `██╗   ██╗██╗██╗   ██╗███████╗██╗  ██╗    ██████╗  █████╗ ██╗    ██╗ █████╗ ██████╗
+██║   ██║██║██║   ██║██╔════╝██║ ██╔╝    ██╔══██╗██╔══██╗██║    ██║██╔══██╗██╔══██╗
+██║   ██║██║██║   ██║█████╗  █████╔╝     ██████╔╝███████║██║ █╗ ██║███████║██████╔╝
+╚██╗ ██╔╝██║╚██╗ ██╔╝██╔══╝  ██╔═██╗     ██╔═══╝ ██╔══██║██║███╗██║██╔══██║██╔══██╗
+ ╚████╔╝ ██║ ╚████╔╝ ███████╗██║  ██╗    ██║     ██║  ██║╚███╔███╔╝██║  ██║██║  ██║
+  ╚═══╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝   ╚═╝     ╚═╝  ╚═╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝`,
+        nameCompact: `██╗   ██╗██╗██╗   ██╗███████╗██╗  ██╗
+██║   ██║██║██║   ██║██╔════╝██║ ██╔╝
+██║   ██║██║██║   ██║█████╗  █████╔╝
+╚██╗ ██╔╝██║╚██╗ ██╔╝██╔══╝  ██╔═██╗
+ ╚████╔╝ ██║ ╚████╔╝ ███████╗██║  ██╗
+  ╚═══╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝
+██████╗  █████╗ ██╗    ██╗ █████╗ ██████╗
+██╔══██╗██╔══██╗██║    ██║██╔══██╗██╔══██╗
+██████╔╝███████║██║ █╗ ██║███████║██████╔╝
+██╔═══╝ ██╔══██║██║███╗██║██╔══██║██╔══██╗
+██║     ██║  ██║╚███╔███╔╝██║  ██║██║  ██║
+╚═╝     ╚═╝  ╚═╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝`,
         subtitle: "AI & ML Developer",
         bio: "B.Tech AI & ML student building intelligent, automation-driven systems. Currently focused on Agentic AI."
     };
+
 
     const skillsData = {
         'languages': [
@@ -48,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsData = [
         {
             title: "LinkedIn Profile Analyzer",
-            tags: ["Python", "Selenium"],
+            tags: ["Python", "Playwright", "Flask"],
             desc: "A sophisticated browser extension that scrapes LinkedIn profiles and employs Gemini AI to create custom, recruiter-focused analytical summaries.",
             bullets: ["Browser extension integration", "LLM-powered analytical insights"],
             link: "",
@@ -99,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const certsData = [
         { icon: "TATA", title: "GenAI Powered Analytics", org: "Tata Group", date: "Oct 2025", type: "job simulation" },
+        { icon: "ANTHROPIC", title: "Model Context Protocol", org: "Anthropic", date: "Sep 2025", type: "course" },
         { icon: "IBM", title: "Data Analysis Using Python", org: "IBM Skills Network", date: "Aug 2025", type: "course" },
         { icon: "DELOITTE", title: "Technology & Data Analytics", org: "Deloitte Australia", date: "Jun 2025", type: "job simulation" }
     ];
@@ -122,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .split("")
                 .map((letter, index) => {
                     if (index < Math.floor(iteration)) return finalString[index];
-                    if (letter === " ") return " ";
+                    if (letter === " " || letter === "\n") return letter;
                     return chars[Math.floor(Math.random() * chars.length)];
                 })
                 .join("");
@@ -184,6 +203,26 @@ document.addEventListener('DOMContentLoaded', () => {
         showNextLine();
     }
 
+    // Fit ASCII art to available container width by shrinking font-size
+    function fitAsciiArt(el, maxSize = 10) {
+        // Reset to max so measurement is accurate
+        el.style.fontSize = maxSize + 'px';
+
+        // Available width = terminal body width minus its left+right padding
+        const style = getComputedStyle(termBody);
+        const padH = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+        const available = termBody.clientWidth - padH;
+
+        // scrollWidth gives the actual rendered width of the pre content
+        const artWidth = el.scrollWidth;
+
+        if (artWidth > available && available > 0) {
+            const ratio = available / artWidth;
+            const fitted = Math.max(3, parseFloat((maxSize * ratio).toFixed(2)));
+            el.style.fontSize = fitted + 'px';
+        }
+    }
+
     // ================================================
     // RENDERERS
     // ================================================
@@ -197,10 +236,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const outputHtml = `
                 <div class="term-output">
-                    <div class="term-comment anim-fade-up anim-fade-up-d1">// vivek_pawar — portfolio v2.0</div>
+                    <div class="term-comment anim-fade-up anim-fade-up-d1">// vivek_pawar — portfolio</div>
                     <hr class="term-hero-separator anim-fade-up anim-fade-up-d1">
                     <span class="term-hero-label anim-fade-up anim-fade-up-d1" id="hero-label"></span>
-                    <span class="term-hero-name anim-fade-up anim-fade-up-d2" id="hero-name"></span>
+                    <pre class="term-hero-name anim-fade-up anim-fade-up-d2" id="hero-name"></pre>
                     <span class="term-hero-subtitle anim-fade-up anim-fade-up-d3">› ${heroData.subtitle}</span>
                     <span class="term-hero-bio anim-fade-up anim-fade-up-d4" id="hero-bio"></span>
                     <div class="term-hero-cta anim-fade-up anim-fade-up-d5">
@@ -213,11 +252,27 @@ document.addEventListener('DOMContentLoaded', () => {
             termBody.innerHTML += outputHtml;
 
             const labelEl = document.getElementById('hero-label');
-            const nameEl = document.getElementById('hero-name');
-            const bioEl = document.getElementById('hero-bio');
+            const nameEl  = document.getElementById('hero-name');
+            const bioEl   = document.getElementById('hero-bio');
 
+            // Use compact art on narrow screens (≤ 520px)
+            const useCompact = window.innerWidth <= 520;
+            const artText = useCompact ? heroData.nameCompact : heroData.name;
+
+            // Set text first so the browser can measure actual rendered width,
+            // then fit the font-size so it never overflows the terminal body.
+            // Stacked compact art is ~43 chars wide (vs 87 full), so it can be larger.
+            nameEl.innerText = artText;
+            fitAsciiArt(nameEl, useCompact ? 8 : 10);
+            const fittedSize = nameEl.style.fontSize; // capture before scramble
+
+            // Scramble effect — innerText changes but font-size style is untouched
             setTimeout(() => scrambleText(labelEl, heroData.label, 800), 150);
-            setTimeout(() => scrambleText(nameEl, heroData.name, 1400), 350);
+            setTimeout(() => {
+                scrambleText(nameEl, artText, 1400);
+                // Re-apply measured size (scramble may briefly flash wider chars)
+                nameEl.style.fontSize = fittedSize;
+            }, 350);
             setTimeout(() => typewriterText(bioEl, heroData.bio, 18), 1200);
 
             isTyping = false;
@@ -274,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filters = document.createElement('div');
         filters.className = 'skills-filters anim-fade-up';
         filters.innerHTML = `<span class="term-comment" style="font-size: 11px; margin-right: 4px;">grep:</span>`;
-        
+
         for (const category of Object.keys(skillsData)) {
             const btn = document.createElement('button');
             btn.className = 'filter-btn';
@@ -282,12 +337,12 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = `${category}()`;
             filters.appendChild(btn);
         }
-        
+
         container.appendChild(filters);
         const outputArea = document.createElement('div');
         outputArea.id = 'filter-output-area';
         container.appendChild(outputArea);
-        
+
         setupFilterListeners(filters);
     }
 
@@ -305,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.classList.add('active');
 
                 outputArea.innerHTML = `<div class="prompt-line" style="margin-bottom: 8px;">${buildPromptLine(`ls -l | grep ${key}`, false)}</div>`;
-                
+
                 let sIdx = 0;
                 function revealFilterSkill() {
                     if (sIdx < skills.length) {
@@ -433,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const descArea = document.getElementById('p-desc');
         const linksArea = document.getElementById('p-links');
-        
+
         output.classList.add('visible');
 
         // Typewriter reveal for description
@@ -455,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Show links at the end
                     linksArea.style.transition = 'opacity 0.5s ease';
                     linksArea.style.opacity = '1';
-                    
+
                     let linksHtml = '';
                     if (p.link) linksHtml += `<a href="${p.link}" target="_blank" class="detail-link">Execute_App()</a>`;
                     if (p.gh) linksHtml += `<a href="${p.gh}" target="_blank" class="detail-link">View_Source()</a>`;
@@ -561,27 +616,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ================================================
-    // SECURITY — Anti-Copy Measures
-    // ================================================
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-        // Disable F12, Ctrl+Shift+I (DevTools), Ctrl+U (Source), Ctrl+S (Save), Ctrl+C (Copy)
-        if (
-            e.key === 'F12' ||
-            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-            (e.ctrlKey && e.key === 'u') ||
-            (e.ctrlKey && e.key === 's') ||
-            (e.ctrlKey && e.key === 'c')
-        ) {
-            e.preventDefault();
-            return false;
-        }
-    });
-
-    // ================================================
     // INIT
     // ================================================
     setTimeout(() => {
         executeCommand('cd me');
     }, 300);
+
+    // Re-fit ASCII art on resize / orientation change
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            const nameEl = document.getElementById('hero-name');
+            if (nameEl) {
+                // Re-render hero if active (handles compact↔full switch on rotation)
+                const prevCmd = currentCmd;
+                if (prevCmd === 'cd me') {
+                    currentCmd = ''; // allow re-render
+                    isTyping = false;
+                    executeCommand('cd me');
+                } else {
+                    // Just re-fit without re-rendering
+                    fitAsciiArt(nameEl, window.innerWidth <= 520 ? 13 : 10);
+                }
+            }
+        }, 200);
+    });
 });
