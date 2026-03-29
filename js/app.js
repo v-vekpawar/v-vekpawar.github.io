@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 ██╔═══╝ ██╔══██║██║███╗██║██╔══██║██╔══██╗
 ██║     ██║  ██║╚███╔███╔╝██║  ██║██║  ██║
 ╚═╝     ╚═╝  ╚═╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝`,
-        subtitle: "AI & ML Developer",
-        bio: "B.Tech AI & ML student building intelligent, automation-driven systems. Currently focused on Agentic AI."
+        subtitle: "PYTHON DEVELOPER",
+        bio: "I build automation systems and LLM-integrated tools using Python, Flask, and Gemini API. Currently learning agentic AI."
     };
 
 
