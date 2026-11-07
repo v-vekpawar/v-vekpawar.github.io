@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isTyping = false;
     let currentCmd = '';
+    let cwd = '~';
+    let viewToken = 0;
+    let expToken = 0;
+    const titleEl = document.querySelector('.terminal-title');
 
     // ================================================
     // DATA
@@ -30,8 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
 ██╔═══╝ ██╔══██║██║███╗██║██╔══██║██╔══██╗
 ██║     ██║  ██║╚███╔███╔╝██║  ██║██║  ██║
 ╚═╝     ╚═╝  ╚═╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝`,
-        subtitle: "PYTHON DEVELOPER",
-        bio: "I build automation systems and LLM-integrated tools using Python, Flask, and Gemini API. Currently learning agentic AI."
+        subtitle: "AGENTIC AI DEVELOPER",
+        bio: "Agentic AI Developer specializing in autonomous AI agents, with experience developing solutions for DG Signals, Indian Army. I build AI agents and automation tools that take over manual work, in Python, FastAPI and LLM APIs. Open to AI Engineer and Python Backend roles."
     };
 
 
@@ -41,19 +45,28 @@ document.addEventListener('DOMContentLoaded', () => {
             { name: 'Java', desc: 'OOP & DSA' },
             { name: 'SQL', desc: 'Database' }
         ],
-        'ai_tools': [
-            { name: 'Playwright', desc: 'Browser Automation' },
+        'agentic_ai': [
+            { name: 'Agentic AI', desc: 'Tool use & multi-step agents' },
+            { name: 'LLM APIs', desc: 'Gemini, Anthropic' },
+            { name: 'MCP', desc: 'Anthropic certified' },
             { name: 'Prompting', desc: 'Structured Outputs' }
         ],
+        'automation': [
+            { name: 'Playwright', desc: 'Browser Automation' },
+            { name: 'Selenium', desc: 'Browser Automation' },
+            { name: 'Web Scraping', desc: 'Dynamic JS pages' }
+        ],
         'backend': [
+            { name: 'FastAPI', desc: 'Async REST APIs' },
             { name: 'Flask', desc: 'REST API framework' },
+            { name: 'REST APIs', desc: 'Design & Consumption' },
             { name: 'Pandas', desc: 'Data Analysis' },
-            { name: 'Numpy', desc: 'Numerical Computing' },
-            { name: 'REST APIs', desc: 'Design & Consumption' }
+            { name: 'Numpy', desc: 'Numerical Computing' }
         ],
         'tools': [
             { name: 'Git/GitHub', desc: 'version control' },
-            { name: 'HTML/CSS/JS', desc: 'frontend UIs' }
+            { name: 'HTML/CSS/JS', desc: 'frontend UIs' },
+            { name: 'Next.js', desc: 'React frontend' }
         ]
     };
 
@@ -66,67 +79,163 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsData = [
         {
             title: "LinkedIn Profile Analyzer",
-            tags: ["Python", "Playwright", "Flask"],
-            desc: "A sophisticated browser extension that scrapes LinkedIn profiles and employs Gemini AI to create custom, recruiter-focused analytical summaries.",
-            bullets: ["Browser extension integration", "LLM-powered analytical insights"],
+            tags: ["Python", "Playwright", "Flask", "Gemini API"],
+            desc: "Scrapes LinkedIn profiles with Playwright and uses Gemini to score and summarize them for recruiters, cutting a manual review from minutes to under 30 seconds.",
+            bullets: ["Handles JS-rendered pages with cookie persistence and login-state management", "Gemini-powered scoring and recruiter-focused summaries"],
             link: "",
             gh: "https://github.com/v-vekpawar/linkedin_analyzer_extension"
         },
         {
             title: "Auto Portfolio Studio",
-            tags: ["Next.js", "Flask", "AI Automation"],
-            desc: "Automatically generates a stunning personal portfolio website from LinkedIn, GitHub, and Resume—powered by Next.js, Flask, and AI.",
-            bullets: ["Self-operating website generation", "Integrates with GitHub/LinkedIn APIs", "Automated deployment pipeline"],
+            tags: ["Next.js", "Flask", "Gemini API"],
+            desc: "Generates a developer portfolio from a GitHub username, LinkedIn data or an uploaded resume in under 60 seconds, cutting manual setup by about 90%.",
+            bullets: ["Pulls GitHub repo metadata and resume content automatically", "Reusable Flask APIs with a Next.js + Tailwind frontend", "Gemini-generated portfolio sections"],
             link: "https://auto-portfolio-three.vercel.app",
             gh: "https://github.com/v-vekpawar/Auto_Portfolio"
         },
         {
             title: "Healthcare Copilot",
             tags: ["JavaScript", "Gemini API"],
-            desc: "A secure web application enabling patients to submit medical assistance requests mapped with AI-powered summary generation.",
+            desc: "A secure web app where patients submit medical assistance requests and get an AI-generated structured summary.",
             bullets: ["Generates structured medical summaries", "Improves triage efficiency", "High-accessibility UI"],
             link: "https://healthcaresupportportal.vercel.app",
             gh: "https://github.com/v-vekpawar/healthcare_support_portal-demo"
         },
         {
+            title: "Decision-Driven Data Analysis",
+            tags: ["Python", "Pandas", "Scikit-learn"],
+            desc: "A rule-based pipeline that deterministically gates cleaning, EDA and modeling to prevent silent data corruption and flag business risks.",
+            bullets: ["Separates validation logic from execution, with every conversion decision logged", "Generates reproducible PDF reports with decision logs and risk summaries"],
+            link: "",
+            gh: "https://github.com/v-vekpawar/Data_Analysis_System"
+        },
+        {
             title: "Event Manager Platform",
             tags: ["Flask", "Python", "OAuth"],
-            desc: "A sleek, modern web application for discovering and managing events with automated scraping and Google OAuth.",
+            desc: "A web app for discovering and managing events, with automated scraping and Google OAuth.",
             bullets: ["Eventbrite automated scraping", "Google OAuth secure authentication"],
             link: "",
             gh: "https://github.com/v-vekpawar/event-manager"
+        }
+    ];
+
+    const experienceData = [
+        {
+            cmd: "IAIP",
+            role: "Intern (IAIP)",
+            org: "Indian Army · DG Signals",
+            period: "Aug 2026 – Nov 2026",
+            length: "75 days",
+            status: "COMPLETED",
+            featured: true,
+            kv: [
+                ["Programme", "Indian Army Internship Program (IAIP)"],
+                ["Placement", "DG Signals, Indian Army"]
+            ],
+            progress: { label: "75/75 days", pct: 100 },
+            points: [
+                "architecture and layout vetting of applications and websites",
+                "SOC operations work",
+                "automated tools replacing manual vetting and SOC tasks",
+                "consolidated dashboard bringing those tools together",
+                "ownership, and fast adaptation to new technologies and networks"
+            ]
         },
         {
-            title: "Deterministic Data Analysis",
-            tags: ["Python", "Data Science"],
-            desc: "A policy-driven data analysis system that deterministically evaluates when modeling is justified and flags business risks.",
-            bullets: ["Algorithmically flags anomalies", "Prevents stochastic over-modeling"],
-            link: "",
-            gh: "https://github.com/v-vekpawar/Data_Analysis_System"
+            cmd: "Conscript-HR",
+            role: "Python Developer Intern",
+            org: "Conscript HR (Remote)",
+            period: "Jul 2026 – Aug 2026",
+            length: "1 month",
+            status: "COMPLETED",
+            kv: [
+                ["Company", "Conscript HR Advisors Pvt Ltd"],
+                ["Mode", "Remote"]
+            ],
+            progress: { label: "1 month", pct: 100 },
+            points: [
+                "lead-generation agent that generates and qualifies leads from a query",
+                "browser automation, web scraping, email and marketing workflows",
+                "10,000+ records processed, existing scripts sped up through optimization"
+            ]
         }
     ];
 
     const educationData = {
-        degree: "B.Tech — Artificial Intelligence",
+        degree: "B.Tech — Artificial Intelligence & Machine Learning",
         university: "Guru Gobind Singh Indraprastha University",
-        dates: "08/2023 — 07/2027",
-        sgpa: "8.441",
-        semester: "6",
+        dates: "Aug 2023 – Jul 2027",
+        sgpa: "8.5",
+        semester: "7",
         status: "In Progress"
     };
 
+    // Paste each credential link into `url`; the "↗ credential" link only shows when url is set.
     const certsData = [
-        { icon: "TATA", title: "GenAI Powered Analytics", org: "Tata Group", date: "Oct 2025", type: "job simulation" },
-        { icon: "ANTHROPIC", title: "Model Context Protocol", org: "Anthropic", date: "Sep 2025", type: "course" },
-        { icon: "IBM", title: "Data Analysis Using Python", org: "IBM Skills Network", date: "Aug 2025", type: "course" },
-        { icon: "DELOITTE", title: "Technology & Data Analytics", org: "Deloitte Australia", date: "Jun 2025", type: "job simulation" }
+        { folder: "oracle/", title: "Agentic AI Certified Foundations Associate", org: "Oracle", date: "Aug 2026", type: "course", url: "" },
+        { folder: "anthropic/", title: "Model Context Protocol", org: "Anthropic", date: "Sep 2025", type: "course", url: "" },
+        { folder: "tata-forage/", title: "GenAI Powered Analytics", org: "Tata Group (Forage)", date: "Oct 2025", type: "job simulation", url: "" },
+        { folder: "ibm/", title: "Data Analysis Using Python", org: "IBM Skills Network", date: "Aug 2025", type: "course", url: "" },
+        { folder: "deloitte-forage/", title: "Technology & Data Analytics", org: "Deloitte Australia (Forage)", date: "Jun 2025", type: "job simulation", url: "" }
+    ];
+
+    const timelineData = [
+        { year: "2023", t1: "B.Tech begins", t2: "Aug 2023", t3: "", state: "past" },
+        { year: "2024", t1: "Hackathons begin", t2: "SIH · first hackathon", t3: "Projects & skills", state: "past" },
+        { year: "2025", t1: "SIH college selection", t2: "4 certifications", t3: "Jun – Oct 2025", state: "past" },
+        { year: "2026", t1: "2 internships", t2: "Jul – Nov 2026", t3: "", state: "now" },
+        { year: "2027", t1: "Graduation", t2: "Jul 2027", t3: "", state: "future" }
     ];
 
     // ================================================
     // UTILITIES
     // ================================================
     function buildPromptLine(cmd = '', showCursor = true) {
-        return `<span class="term-prompt">vivek</span><span class="term-dollar">@</span><span class="term-path">portfolio</span><span class="term-dollar">:~$</span> <span class="term-command">${cmd}</span>${showCursor ? '<span class="term-cursor"></span>' : ''}`;
+        return `<span class="term-prompt">vivek</span><span class="term-dollar term-at">@</span><span class="term-path">portfolio</span><span class="term-dollar term-colon">:</span><span class="term-cwd">${cwd}</span><span class="term-dollar term-end">$</span> <span class="term-command">${cmd}</span>${showCursor ? '<span class="term-cursor"></span>' : ''}`;
+    }
+
+    function setCwd(path) {
+        cwd = path;
+        if (titleEl) titleEl.textContent = 'vivek@portfolio: ' + path;
+    }
+
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    // Types a command into a fresh prompt line inside `container`, like a real shell.
+    async function typeCmd(container, cmd, alive, lead = 350, speed = 45) {
+        const line = document.createElement('div');
+        line.className = 'prompt-line sub-prompt';
+        line.innerHTML = buildPromptLine('', true);
+        container.appendChild(line);
+        const span = line.querySelector('.term-command');
+        if (lead) await sleep(lead);
+        for (const ch of cmd) {
+            if (!alive()) return false;
+            span.textContent += ch;
+            await sleep(speed);
+        }
+        await sleep(250);
+        if (!alive()) return false;
+        const cur = line.querySelector('.term-cursor');
+        if (cur) cur.remove();
+        return true;
+    }
+
+    function addBlock(container, html, cls = 'fx') {
+        const d = document.createElement('div');
+        d.className = cls;
+        d.innerHTML = html;
+        container.appendChild(d);
+        termBody.scrollTop = termBody.scrollHeight; // follow the output like a terminal
+        return d;
+    }
+
+    function addIdlePrompt(container) {
+        const d = document.createElement('div');
+        d.className = 'prompt-line term-idle fx';
+        d.innerHTML = buildPromptLine('', true);
+        container.appendChild(d);
+        return d;
     }
 
     function scrambleText(element, finalString, duration = 1500) {
@@ -223,6 +332,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Shrinks hero spacing in steps until the home screen fits without a scrollbar
+    function fitHeroToBody(nameEl, baseSize) {
+        const levels = ['hero-tight-1', 'hero-tight-2', 'hero-tight-3'];
+        const sizes = [baseSize, baseSize, Math.max(6, baseSize - 1.5), Math.max(5, baseSize - 3)];
+        levels.forEach(c => termBody.classList.remove(c));
+        const fits = () => {
+            const last = termBody.lastElementChild;
+            if (!last) return true;
+            const padB = parseFloat(getComputedStyle(termBody).paddingBottom) || 0;
+            return last.offsetTop + last.offsetHeight <= termBody.clientHeight - padB + 1;
+        };
+        fitAsciiArt(nameEl, sizes[0]);
+        for (let i = 0; i < levels.length; i++) {
+            if (fits()) break;
+            termBody.classList.add(levels[i]);
+            fitAsciiArt(nameEl, sizes[i + 1]);
+        }
+        nameEl.dataset.fit = nameEl.style.fontSize;
+    }
+
     // ================================================
     // RENDERERS
     // ================================================
@@ -230,9 +359,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const promptHtml = `<div class="prompt-line">${buildPromptLine('', true)}</div>`;
         termBody.innerHTML = promptHtml;
 
-        typeCommand('cd me', () => {
+        typeCommand('whoami', () => {
             const promptLine = termBody.querySelector('.prompt-line');
-            promptLine.innerHTML = buildPromptLine('cd me', false);
+            promptLine.innerHTML = buildPromptLine('whoami', false);
 
             const outputHtml = `
                 <div class="term-output">
@@ -246,6 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <a href="mailto:contact.vivekpawar@gmail.com" class="btn-contact">
                             <span>→</span> Contact Me
                         </a>
+                        <button type="button" class="btn-contact btn-ghost" data-go="cd experience">View Experience <span>→</span></button>
                     </div>
                 </div>
             `;
@@ -271,9 +401,24 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 scrambleText(nameEl, artText, 1400);
                 // Re-apply measured size (scramble may briefly flash wider chars)
-                nameEl.style.fontSize = fittedSize;
+                nameEl.style.fontSize = nameEl.dataset.fit || fittedSize;
             }, 350);
             setTimeout(() => typewriterText(bioEl, heroData.bio, 18), 1200);
+
+            const goBtn = termBody.querySelector('[data-go]');
+            if (goBtn) goBtn.addEventListener('click', () => executeCommand(goBtn.dataset.go));
+
+            // Reserve the bio's final height so typing it never pushes the layout
+            bioEl.textContent = heroData.bio;
+            bioEl.style.minHeight = bioEl.offsetHeight + 'px';
+            bioEl.textContent = '';
+
+            const idle = document.createElement('div');
+            idle.className = 'prompt-line term-idle anim-fade-up anim-fade-up-d5';
+            idle.innerHTML = buildPromptLine('', true);
+            termBody.appendChild(idle);
+
+            fitHeroToBody(nameEl, useCompact ? 8 : 10);
 
             isTyping = false;
         });
@@ -283,9 +428,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const promptHtml = `<div class="prompt-line">${buildPromptLine('', true)}</div>`;
         termBody.innerHTML = promptHtml;
 
-        typeCommand('cd skills && ls -l', () => {
+        typeCommand('ls -l', () => {
             const promptLine = termBody.querySelector('.prompt-line');
-            promptLine.innerHTML = buildPromptLine('cd skills && ls -l', false);
+            promptLine.innerHTML = buildPromptLine('ls -l', false);
 
             const outputDiv = document.createElement('div');
             outputDiv.className = 'term-output';
@@ -388,9 +533,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const promptHtml = `<div class="prompt-line">${buildPromptLine('', true)}</div>`;
         termBody.innerHTML = promptHtml;
 
-        typeCommand('cd projects', () => {
+        typeCommand('ls', () => {
             const promptLine = termBody.querySelector('.prompt-line');
-            promptLine.innerHTML = buildPromptLine('cd projects', false);
+            promptLine.innerHTML = buildPromptLine('ls', false);
 
             let html = `<div class="term-output">`;
             html += `<div class="term-comment anim-fade-up" style="margin-bottom: 12px;">// ~/projects — ${projectsData.length} repositories found</div>`;
@@ -521,46 +666,125 @@ document.addEventListener('DOMContentLoaded', () => {
         }, (p.desc.length * 10) + 150);
     }
 
-    function renderEducation() {
-        const promptHtml = `<div class="prompt-line">${buildPromptLine('', true)}</div>`;
-        termBody.innerHTML = promptHtml;
+    async function renderEducation(tok) {
+        const alive = () => tok === viewToken;
+        termBody.innerHTML = '';
+        if (!await typeCmd(termBody, 'cat degree.txt', alive)) return;
 
-        typeCommand('cd education', () => {
-            const promptLine = termBody.querySelector('.prompt-line');
-            promptLine.innerHTML = buildPromptLine('cd education', false);
+        const view = document.createElement('div');
+        view.className = 'edu-view';
+        termBody.appendChild(view);
 
-            const pad = (str, len) => str + '\u00A0'.repeat(Math.max(0, len - str.length));
+        addBlock(view, `${educationData.degree.replace(' — ', ', ')}`, 'edu-deg-title fx');
+        await sleep(180); if (!alive()) return;
+        addBlock(view, `${educationData.university} · ${educationData.dates}`, 'edu-deg-sub fx');
+        await sleep(250); if (!alive()) return;
 
-            let lines = [];
-            lines.push(`<span class="term-comment">// loading credentials.json...</span>`);
-            lines.push(`&nbsp;`);
-            lines.push(`<span class="edu-key">${pad('degree', 12)}</span><span class="edu-colon">:</span> <span class="edu-str">"${educationData.degree}"</span>`);
-            lines.push(`<span class="edu-key">${pad('university', 12)}</span><span class="edu-colon">:</span> <span class="edu-str">"${educationData.university}"</span>`);
-            lines.push(`<span class="edu-key">${pad('period', 12)}</span><span class="edu-colon">:</span> <span class="edu-str">"${educationData.dates}"</span>`);
-            lines.push(`<span class="edu-key">${pad('sgpa', 12)}</span><span class="edu-colon">:</span> <span class="edu-num">${educationData.sgpa}</span>`);
-            lines.push(`<span class="edu-key">${pad('semester', 12)}</span><span class="edu-colon">:</span> <span class="edu-num">${educationData.semester}</span>`);
-            lines.push(`<span class="edu-key">${pad('status', 12)}</span><span class="edu-colon">:</span> <span class="edu-status-dot">●</span> <span class="edu-str">${educationData.status}</span>`);
-            lines.push(`&nbsp;`);
-            lines.push(`<span class="term-comment">// loading certifications[${certsData.length}]...</span>`);
-            lines.push(`&nbsp;`);
+        const tl = document.createElement('div');
+        tl.className = 'tl';
+        view.appendChild(tl);
+        for (let i = 0; i < timelineData.length; i++) {
+            const c = timelineData[i];
+            const last = i === timelineData.length - 1;
+            const node = c.state === 'future' ? '○' : (c.state === 'now' ? '◉' : '●');
+            const line = last ? '' : (c.state === 'now'
+                ? '<span class="tl-line half"><i></i><i></i></span>'
+                : '<span class="tl-line"></span>');
+            addBlock(tl, `<div class="tl-axis"><span class="tl-node">${node}</span>${line}</div>
+                <div class="tl-year">${c.year}</div><div class="tl-t1">${c.t1}</div>
+                <div class="tl-t2">${c.t2}</div><div class="tl-t3">${c.t3}</div>`, `tl-col ${c.state} fx`);
+            await sleep(230); if (!alive()) return;
+        }
 
-            certsData.forEach((cert, idx) => {
-                lines.push(`<span class="edu-cert-idx">[${idx}]</span> <span class="edu-cert-icon">${cert.icon}</span> <span class="edu-pipe">│</span> <span class="edu-cert-name">${cert.title}</span> <span class="edu-pipe">│</span> <span class="edu-str">${cert.date}</span> <span class="term-comment">// ${cert.type}</span>`);
-            });
+        await sleep(150); if (!alive()) return;
+        addBlock(view, `<span class="edu-badge">SGPA ${educationData.sgpa}</span> <span class="edu-status-dot">●</span> <span class="edu-status-text">${educationData.status.toUpperCase()}</span> <span class="edu-muted">· ${educationData.semester}th semester</span>`, 'edu-sgpa fx');
+        await sleep(450); if (!alive()) return;
 
-            let eduHtml = `<div class="term-output">`;
-            lines.forEach((line) => {
-                eduHtml += `<span class="edu-line">${line}</span>`;
-            });
-            eduHtml += `</div>`;
+        addBlock(view, '', 'edu-gap');
+        if (!await typeCmd(view, 'tree certifications/', alive)) return;
+        termBody.scrollTop = termBody.scrollHeight;
 
-            termBody.innerHTML += eduHtml;
+        addBlock(view, 'certifications/', 'tree-root fx');
+        await sleep(200); if (!alive()) return;
+        for (let i = 0; i < certsData.length; i++) {
+            const c = certsData[i];
+            const branch = i === certsData.length - 1 ? '└──' : '├──';
+            const link = c.url ? `<a class="tree-link" href="${c.url}" target="_blank" rel="noopener">↗ credential</a>` : '';
+            addBlock(view, `<span class="tree-branch">${branch}</span><span class="tree-folder">${c.folder}</span><span class="tree-title">${c.title}</span><span class="tree-lead"></span><span class="tree-date">${c.date}</span>${link}`, 'tree-row fx');
+            await sleep(280); if (!alive()) return;
+        }
+        addBlock(view, `${certsData.length} certifications`, 'tree-count fx');
+        await sleep(200); if (!alive()) return;
+        addIdlePrompt(view);
+        termBody.scrollTop = termBody.scrollHeight;
+    }
 
-            const eduLines = termBody.querySelectorAll('.edu-line');
-            revealLines(Array.from(eduLines), 80);
+    async function renderExperience(tok) {
+        const alive = () => tok === viewToken;
+        termBody.innerHTML = '';
+        if (!await typeCmd(termBody, 'ls -lt', alive)) return;
 
-            isTyping = false;
-        });
+        const view = document.createElement('div');
+        view.className = 'exp-view';
+        termBody.appendChild(view);
+
+        addBlock(view, '<span></span><span>ROLE</span><span>ORGANISATION</span><span>PERIOD</span><span>LENGTH</span><span>STATUS</span>', 'tbl-head fx');
+        for (let i = 0; i < experienceData.length; i++) {
+            const e = experienceData[i];
+            const row = addBlock(view, `<span class="tbl-mark"></span>
+                <span class="tbl-c tbl-role">${e.role}</span><span class="tbl-c tbl-org">${e.org}</span>
+                <span class="tbl-c tbl-period">${e.period}</span><span class="tbl-c tbl-len">${e.length}</span>
+                <span class="tbl-c tbl-status">● ${e.status}</span>`,
+                `tbl-row${i === 0 ? ' selected' : ''}${e.featured ? ' featured' : ''} fx`);
+            row.dataset.idx = i;
+            row.setAttribute('role', 'button');
+            row.setAttribute('tabindex', '0');
+            const open = () => { if (!row.classList.contains('selected')) showExperience(i, viewToken); };
+            row.addEventListener('click', open);
+            row.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); } });
+            await sleep(170); if (!alive()) return;
+        }
+        addBlock(view, '<span class="tbl-hint-arrow">↑</span> click a row to inspect it', 'tbl-hint fx');
+        const box = document.createElement('div');
+        box.className = 'exp-detail';
+        box.id = 'exp-detail';
+        view.appendChild(box);
+        await sleep(300); if (!alive()) return;
+        showExperience(0, tok);
+    }
+
+    async function showExperience(idx, tok) {
+        const my = ++expToken;
+        const alive = () => tok === viewToken && my === expToken;
+        const e = experienceData[idx];
+        const box = document.getElementById('exp-detail');
+        if (!box) return;
+
+        termBody.querySelectorAll('.tbl-row').forEach(r => r.classList.toggle('selected', parseInt(r.dataset.idx, 10) === idx));
+        const hint = termBody.querySelector('.tbl-hint');
+        if (hint && idx !== 0) hint.classList.add('done');
+
+        box.innerHTML = '';
+        if (!await typeCmd(box, 'describe ' + e.cmd, alive, 0, 38)) return;
+
+        const key = k => `<span class="edu-key">${k.padEnd(12, '\u00A0')}</span><span class="edu-colon">:</span> `;
+        const lines = [];
+        e.kv.forEach(([k, v]) => lines.push(key(k) + `<span class="exp-val">${v}</span>`));
+        lines.push(key('Progress') + `<span class="exp-bar"><i></i></span> <span class="exp-val-b">${e.progress.label}</span>`);
+        lines.push(`<span class="term-comment">Highlights</span>`);
+        e.points.forEach(pt => lines.push(`<span class="exp-plus">+</span> <span class="exp-pt">${pt}</span>`));
+
+        for (const l of lines) {
+            if (!alive()) return;
+            const el = addBlock(box, l, 'exp-line');
+            requestAnimationFrame(() => el.classList.add('visible'));
+            const fill = el.querySelector('.exp-bar i');
+            if (fill) requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = e.progress.pct + '%'; }));
+            await sleep(150);
+        }
+        if (!alive()) return;
+        addIdlePrompt(box);
+        termBody.scrollTop = termBody.scrollHeight;
     }
 
     function renderClear() {
@@ -571,11 +795,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // ================================================
     // COMMAND ROUTER
     // ================================================
+    const cwdMap = {
+        'cd me': '~',
+        'cd experience': '~/experience',
+        'cd skills': '~/skills',
+        'cd projects': '~/projects',
+        'cd education': '~/education'
+    };
+
     const commands = {
         'cd me': renderHero,
+        'cd experience': () => { isTyping = false; renderExperience(viewToken); },
         'cd skills': renderSkills,
         'cd projects': renderProjects,
-        'cd education': renderEducation,
+        'cd education': () => { isTyping = false; renderEducation(viewToken); },
         'clear': renderClear
     };
 
@@ -585,6 +818,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         isTyping = true;
         currentCmd = cmd;
+        viewToken++;
+        termBody.classList.remove('hero-tight-1', 'hero-tight-2', 'hero-tight-3');
+        termBody.classList.toggle('is-home', cmd === 'cd me');
 
         cmdBtns.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.cmd === cmd);
@@ -596,6 +832,9 @@ document.addEventListener('DOMContentLoaded', () => {
             renderClear();
             return;
         }
+
+        // "cd" happens instantly, like a real shell: new folder in the prompt and title bar
+        if (cwdMap[cmd]) setCwd(cwdMap[cmd]);
 
         const handler = commands[cmd];
         if (handler) handler();
